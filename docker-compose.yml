@@ -1,0 +1,28 @@
+
+Clone repo and cd into it
+Add server_name='0.0.0.0' to app.launch() in app_rvc.py
+Create a docker-compose.yml
+Run docker-compose up (add -d to run it detached)
+file docker-compose.yml:
+
+services:
+
+  sonitranslate:
+    image: registry.hf.space/r3gm-sonitranslate-translate-audio-of-a-video-content:latest
+    environment:
+      - YOUR_HF_TOKEN="INSERT_TOKEN_HERE"
+      - OPENAI_API_KEY="INSERT_TOKEN_HERE"
+    working_dir: /app
+    volumes:
+      - .:/app
+      - ~/.cache:/root/.cache
+    ports:
+      - 80:7860
+    command: python app_rvc.py
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
